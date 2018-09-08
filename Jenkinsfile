@@ -19,7 +19,7 @@ pipeline {
         }
         steps {
           container('nodejs') {
-            slackSend (color: '#FFFF00', message: "Building Pull-Request [${env.BUILD_NUMBER}] (${env.BUILD_URL})")
+            slackSend (color: '#FFFF00', message: "Building PR: *${env.JOB_NAME}* (${env.BUILD_URL})")
             sh "npm install"
             sh "CI=true DISPLAY=:99 npm test"
 
@@ -43,7 +43,7 @@ pipeline {
         }
         steps {
           container('nodejs') {
-            slackSend (color: '#FFFF00', message: "Building release [${env.BUILD_NUMBER}] (${env.BUILD_URL})")
+            slackSend (color: '#FFFF00', message: "Building release *${env.JOB_NAME}* [*${env.BUILD_NUMBER}*] (${env.BUILD_URL})")
             // ensure we're not on a detached head
             sh "git checkout master"
             sh "git config --global credential.helper store"
