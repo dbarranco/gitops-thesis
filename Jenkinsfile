@@ -19,6 +19,8 @@ pipeline {
         }
         steps {
           container('nodejs') {
+            slackSend (color: '#FFFF00', message: "Started new Pull-Request: '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            
             sh "npm install"
             sh "CI=true DISPLAY=:99 npm test"
 
@@ -34,6 +36,16 @@ pipeline {
              sh "jx preview --app $APP_NAME --dir ../.."
            }
           }
+        }
+      }
+      stage('Dynamic security check') {
+        when {
+          branch 'PR-*'
+        }
+        steps {
+            container('nodejs') {
+              sh 'docker run -t owasp/zap2docker-stable zap-baseline.py -t $(cat .previewUrl) || if [ $? -eq 1 ]; then exit 1; else exit 0; fi'
+            }
         }
       }
       stage('Build Release') {
