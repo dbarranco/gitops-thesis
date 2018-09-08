@@ -43,7 +43,7 @@ pipeline {
         }
         steps {
           container('nodejs') {
-            slackSend (color: '#FFFF00', message: "Building release *${env.JOB_NAME}* [*${env.BUILD_NUMBER}*] (${env.BUILD_URL})")
+            slackSend (color: '#FFFF00', message: "Building release *${env.JOB_NAME}* [*${env.BUILD_NUMBER}*] [Jenkins-x build](${env.BUILD_URL})")
             // ensure we're not on a detached head
             sh "git checkout master"
             sh "git config --global credential.helper store"
@@ -88,10 +88,10 @@ pipeline {
     }
     post {
         success {
-          slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+          slackSend (color: '#00FF00', message: "SUCCESSFUL: *${env.JOB_NAME* [*${env.BUILD_NUMBER}*] [Jenkins-x build](${env.BUILD_URL})")
         }
         failure {
-          slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+          slackSend (color: '#FF0000', message: "FAILED: *${env.JOB_NAME}* [*${env.BUILD_NUMBER}*] [Jenkins-x build](${env.BUILD_URL})")
         }
         always {
           cleanWs()
