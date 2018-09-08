@@ -19,6 +19,8 @@ pipeline {
         }
         steps {
           container('nodejs') {
+            slackSend (color: '#FFFF00', message: "Started new Pull-Request: '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            
             sh "npm install"
             sh "CI=true DISPLAY=:99 npm test"
 
