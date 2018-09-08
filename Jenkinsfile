@@ -19,6 +19,7 @@ pipeline {
         }
         steps {
           container('nodejs') {
+            slackSend (color: '#FFFF00', message: "Building Pull-Request [${env.BUILD_NUMBER}] (${env.BUILD_URL})")
             sh "npm install"
             sh "CI=true DISPLAY=:99 npm test"
 
@@ -42,6 +43,7 @@ pipeline {
         }
         steps {
           container('nodejs') {
+            slackSend (color: '#FFFF00', message: "Building release [${env.BUILD_NUMBER}] (${env.BUILD_URL})")
             // ensure we're not on a detached head
             sh "git checkout master"
             sh "git config --global credential.helper store"
@@ -85,8 +87,14 @@ pipeline {
       }
     }
     post {
+        success {
+          slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
+        failure {
+          slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
         always {
-            cleanWs()
+          cleanWs()
         }
     }
   }
