@@ -37,6 +37,16 @@ pipeline {
           }
         }
       }
+      stage('Dynamic security check') {
+        when {
+          branch 'PR-*'
+        }
+        steps {
+            container('nodejs') {
+              sh 'docker run -t owasp/zap2docker-stable zap-baseline.py -t $(cat .previewUrl) || if [ $? -neq 1 ]; then exit 1; else exit 0; fi'
+            }
+        }
+      }
       stage('Build Release') {
         when {
           branch 'master'
